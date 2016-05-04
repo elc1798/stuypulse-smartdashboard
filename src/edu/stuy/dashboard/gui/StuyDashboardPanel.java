@@ -73,29 +73,30 @@ public class StuyDashboardPanel extends JPanel {
     }
 
     public ITable getTable() {
-        return this.table;
+        return table;
     }
 
     public synchronized void addMouseListener(MouseListener l) {
-        this.glassPane.addMouseListener(l);
-        this.backPane.addMouseListener(l);
+        glassPane.addMouseListener(l);
+        backPane.addMouseListener(l);
     }
 
     public synchronized void addMouseMotionListener(MouseMotionListener l) {
-        this.glassPane.addMouseMotionListener(l);
-        this.backPane.addMouseMotionListener(l);
+        glassPane.addMouseMotionListener(l);
+        backPane.addMouseMotionListener(l);
     }
 
     public void revalidateBacking() {
-        this.backPane.revalidate();
+        backPane.revalidate();
     }
 
     public void setEditable(boolean editable) {
         this.editable = editable;
 
         this.glassPane.setVisible(editable);
-        if (editable)
+        if (editable) {
             this.glassPane.requestFocus();
+        }
     }
 
     public boolean isEditable() {
@@ -120,64 +121,64 @@ public class StuyDashboardPanel extends JPanel {
     }
 
     public void clear() {
-        this.hiddenFields.clear();
-        this.fields.clear();
-        for (DisplayElement element : this.elements) {
+        hiddenFields.clear();
+        fields.clear();
+        for (DisplayElement element : elements) {
             disconnect(element);
-            this.backPane.remove(element);
+            backPane.remove(element);
         }
-        this.elements.clear();
+        elements.clear();
 
-        this.table.removeTableListener(this.listener);
-        this.table.addTableListenerEx(this.listener, 23);
-        this.table.addSubTableListener(this.listener, true);
+        table.removeTableListener(listener);
+        table.addTableListenerEx(listener, 23);
+        table.addSubTableListener(listener, true);
 
         repaint();
     }
 
     public void removeUnusedFields() {
         ArrayList<String> unused = new ArrayList<String>();
-        for (String field : this.fields.keySet()) {
-            if ((!this.table.containsKey(field)) && (!this.table.containsSubTable(field))) {
+        for (String field : fields.keySet()) {
+            if ((!table.containsKey(field)) && (!table.containsSubTable(field))) {
                 unused.add(field);
             }
         }
         for (String field : unused) {
             removeField(field);
-            this.hiddenFields.remove(field);
+            hiddenFields.remove(field);
         }
     }
 
     public void removeField(String field) {
-        Widget elem = (Widget) this.fields.get(field);
-        this.hiddenFields.add(field);
+        Widget elem = (Widget) fields.get(field);
+        hiddenFields.add(field);
         if (elem != null) {
             disconnect(elem);
-            this.backPane.remove(elem);
-            this.fields.remove(field);
-            this.elements.remove(elem);
+            backPane.remove(elem);
+            fields.remove(field);
+            elements.remove(elem);
             repaint(elem.getBounds());
         }
     }
 
     public void removeElement(StaticWidget widget) {
         disconnect(widget);
-        this.backPane.remove(widget);
-        this.elements.remove(widget);
+        backPane.remove(widget);
+        elements.remove(widget);
         repaint(widget.getBounds());
     }
 
     public void shiftToBack(DisplayElement element) {
         int count = 0;
 
-        this.elements.remove(element);
+        elements.remove(element);
 
-        for (DisplayElement e : this.elements) {
-            this.backPane.setComponentZOrder(e, count++);
+        for (DisplayElement e : elements) {
+            backPane.setComponentZOrder(e, count++);
         }
-        this.backPane.setComponentZOrder(element, count);
+        backPane.setComponentZOrder(element, count);
 
-        this.elements.add(element);
+        elements.add(element);
 
         repaint();
     }
@@ -200,15 +201,15 @@ public class StuyDashboardPanel extends JPanel {
         }
         element.setSavedLocation(point);
 
-        this.backPane.add(element);
+        backPane.add(element);
 
         int count = 1;
         for (DisplayElement e : this.elements) {
-            this.backPane.setComponentZOrder(e, count++);
+            backPane.setComponentZOrder(e, count++);
         }
-        this.backPane.setComponentZOrder(element, 0);
+        backPane.setComponentZOrder(element, 0);
 
-        this.elements.addFirst(element);
+        elements.addFirst(element);
 
         revalidate();
         repaint();
@@ -217,7 +218,7 @@ public class StuyDashboardPanel extends JPanel {
     public void setField(String key, Widget element, DataType type, Object value, Point point) {
         removeField(key);
 
-        this.hiddenFields.remove(key);
+        hiddenFields.remove(key);
 
         value = verifyValue(type, value);
 
@@ -226,7 +227,7 @@ public class StuyDashboardPanel extends JPanel {
             element.setType(type);
         }
 
-        this.fields.put(key, element);
+        fields.put(key, element);
 
         addElement(element, point);
 
@@ -235,7 +236,7 @@ public class StuyDashboardPanel extends JPanel {
     }
 
     public void addField(String key) {
-        setField(key, null, this.table.containsKey(key) ? this.table.getValue(key) : null, null);
+        setField(key, null, table.containsKey(key) ? table.getValue(key) : null, null);
     }
 
     public void setField(String key, Class<? extends Widget> preferred, Object value, Point point) {
@@ -243,7 +244,7 @@ public class StuyDashboardPanel extends JPanel {
     }
 
     public void setField(String key, Class<? extends Widget> preferred, DataType type, Object value, Point point) {
-        Widget element = (Widget) this.fields.get(key);
+        Widget element = (Widget) fields.get(key);
 
         if (type == null) {
             System.out.println("WARNING: has no way of handling data at field \"" + key + "\"");
@@ -305,7 +306,7 @@ public class StuyDashboardPanel extends JPanel {
             System.out.println("Adding an element at [" + position.x + "," + position.y + "]");
 
             if ((area.x >= 0) && (area.y >= 0) && (area.x + area.width <= panelBounds.width) && (area.y + area.height <= panelBounds.height)) {
-                Iterator localIterator = this.elements.iterator();
+                Iterator localIterator = elements.iterator();
                 while (localIterator.hasNext()) {
                     DisplayElement element = (DisplayElement) localIterator.next();
                     if ((element != toPlace) && (element.isObstruction())) {
@@ -348,7 +349,7 @@ public class StuyDashboardPanel extends JPanel {
             for (StackTraceElement trace : e.getStackTrace()) {
                 message = message + trace.toString() + "\n";
             }
-            JOptionPane.showMessageDialog(this.frame, message, "Exception When Removing Element", 0);
+            JOptionPane.showMessageDialog(frame, message, "Exception When Removing Element", 0);
         }
     }
 
@@ -407,6 +408,7 @@ public class StuyDashboardPanel extends JPanel {
     }
 
     private class RobotListener implements ITableListener {
+
         private RobotListener() {
         }
 
