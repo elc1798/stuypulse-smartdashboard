@@ -278,7 +278,7 @@ public class StuyDashboardPanel extends JPanel {
             Class clazz = preferred == null ? type.getDefault() : preferred;
 
             if (clazz == null) {
-                Set candidates = DisplayElementRegistry.getWidgetsForType(type);
+                Set<Class<? extends Widget>> candidates = DisplayElementRegistry.getWidgetsForType(type);
 
                 if (candidates.isEmpty()) {
                     System.out.println("WARNING: has no way of handling type " + type);
@@ -308,7 +308,6 @@ public class StuyDashboardPanel extends JPanel {
         return null;
     }
 
-    @SuppressWarnings("unchecked")
     private Point findSpace(DisplayElement toPlace) {
         Stack<Point> positions = new Stack<Point>();
         positions.add(new Point(0, 0));
@@ -355,13 +354,10 @@ public class StuyDashboardPanel extends JPanel {
             element.disconnect();
         } catch (Exception e) {
             String message = "An exception occurred while removing the " +
-                DisplayElement.getName(element
-                    .getClass())
-                + " of type " + e
-                    .getClass()
-                + ".\nThe message is:\n" + e
-                    .getMessage()
-                + "\nThe stack trace is:\n";
+                DisplayElement.getName(element.getClass()) +
+                " of type " + e.getClass() +
+                ".\nThe message is:\n" + e.getMessage() +
+                "\nThe stack trace is:\n";
 
             for (StackTraceElement trace : e.getStackTrace()) {
                 message = message + trace.toString() + "\n";

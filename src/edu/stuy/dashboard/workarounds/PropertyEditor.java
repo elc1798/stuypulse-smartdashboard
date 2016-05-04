@@ -2,6 +2,7 @@ package edu.stuy.dashboard.workarounds;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.util.Arrays;
 import java.util.Map;
 
 import javax.swing.JDialog;
@@ -38,21 +39,25 @@ public class PropertyEditor extends JDialog {
 
     // This method was not set public
     public void setPropertyHolder(PropertyHolder data) {
-        if (this.table.isEditing()) {
-            this.table.getCellEditor().stopCellEditing();
+        if (table.isEditing()) {
+            table.getCellEditor().stopCellEditing();
         }
-        if ((data instanceof Widget))
+        if ((data instanceof Widget)) {
+            System.out.println("FIELD NAME: " + ((Widget) data).getFieldName());
             setTitle(((Widget) data).getFieldName());
-        else {
+        } else {
             setTitle("Edit Properties");
         }
-        this.values = data.getProperties();
-        this.names = ((String[]) this.values.keySet().toArray(new String[this.values.size()]));
-        this.tableModel.fireTableDataChanged();
+        values = data.getProperties();
+        names = ((String[]) values.keySet().toArray(new String[values.size()]));
+        System.out.println(Arrays.toString(names));
+        tableModel.fireTableDataChanged();
+        System.out.println("Table reloaded");
     }
 
-    class PropTableModel extends AbstractTableModel {
-        PropTableModel() {
+    private class PropTableModel extends AbstractTableModel {
+
+        public PropTableModel() {
         }
 
         public int getRowCount() {
@@ -64,37 +69,39 @@ public class PropertyEditor extends JDialog {
         }
 
         public String getColumnName(int i) {
-            if (i == 0)
+            if (i == 0) {
                 return "Property";
-            if (i == 1) {
+            } else if (i == 1) {
                 return "Value";
+            } else {
+                return "Error";
             }
-            return "Error";
         }
 
         public boolean isCellEditable(int row, int col) {
-            boolean editable = col == 1;
-            return editable;
+            return col == 1;
         }
 
         public Object getValueAt(int row, int col) {
+            System.out.printf("Getting %d, %d\n", row, col);
             switch (col) {
                 case 0:
-                    return PropertyEditor.this.names[row];
+                    return names[row];
                 case 1:
-                    return ((Property) PropertyEditor.this.values.get(PropertyEditor.this.names[row])).getTableValue();
+                    return ((Property) PropertyEditor.this.values.get(names[row])).getTableValue();
             }
             return "Bad row, col";
         }
 
         public void setValueAt(Object value, int row, int col) {
             assert (col == 1);
-            ((Property) PropertyEditor.this.values.get(PropertyEditor.this.names[row])).setValue(value);
+            ((Property) PropertyEditor.this.values.get(names[row])).setValue(value);
         }
     }
 
-    class PropertiesTable extends JTable {
-        AbstractTableModel model;
+    private class PropertiesTable extends JTable {
+
+        private AbstractTableModel model;
 
         PropertiesTable(AbstractTableModel model) {
             super();
@@ -102,15 +109,17 @@ public class PropertyEditor extends JDialog {
         }
 
         public TableCellEditor getCellEditor(int row, int col) {
-            TableCellEditor editor = ((Property) PropertyEditor.this.values.get(PropertyEditor.this.names[row])).getEditor(PropertyEditor.this);
+            TableCellEditor editor = ((Property) values.get(names[row])).getEditor(this);
+            System.out.println("Called getCellEditor");
             return editor == null ? super.getCellEditor(row, col) : editor;
         }
 
         public TableCellRenderer getCellRenderer(int row, int col) {
+            System.out.println("Called getCellEditor");
             if (col == 0) {
                 return super.getCellRenderer(row, col);
             }
-            TableCellRenderer renderer = ((Property) PropertyEditor.this.values.get(PropertyEditor.this.names[row])).getRenderer();
+            TableCellRenderer renderer = ((Property) values.get(names[row])).getRenderer();
             return renderer == null ? super.getCellRenderer(row, col) : renderer;
         }
     }

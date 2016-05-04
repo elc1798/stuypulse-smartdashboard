@@ -70,45 +70,45 @@ public class StuyDashboardFrame extends JFrame {
 
         setLayout(new BorderLayout());
 
-        this.smartDashboardPanel = new StuyDashboardPanel(this, Robot.getTable());
-        this.smartDashboardPanel.setName("SmartDashboard");
+        smartDashboardPanel = new StuyDashboardPanel(this, Robot.getTable());
+        smartDashboardPanel.setName("SmartDashboard");
 
-        this.liveWindowPanel = new StuyDashboardPanel(this, Robot.getLiveWindow());
-        this.liveWindowPanel.setName("LiveWindow");
+        liveWindowPanel = new StuyDashboardPanel(this, Robot.getLiveWindow());
+        liveWindowPanel.setName("LiveWindow");
 
-        this.mainPanel = new MainPanel(new CardLayout(), this.smartDashboardPanel, new StuyDashboardPanel[] {
-            this.liveWindowPanel, this.smartDashboardPanel
+        mainPanel = new MainPanel(new CardLayout(), smartDashboardPanel, new StuyDashboardPanel[] {
+            liveWindowPanel, smartDashboardPanel
         });
-        this.mainPanel.add(this.smartDashboardPanel, DisplayMode.SmartDashboard.toString());
-        this.mainPanel.add(this.liveWindowPanel, DisplayMode.LiveWindow.toString());
+        mainPanel.add(smartDashboardPanel, DisplayMode.SmartDashboard.toString());
+        mainPanel.add(liveWindowPanel, DisplayMode.LiveWindow.toString());
 
         setDisplayMode(DisplayMode.SmartDashboard);
-        this.menuBar = new StuyDashboardMenu(this, this.mainPanel);
+        menuBar = new StuyDashboardMenu(this, mainPanel);
 
-        this.propEditor = new PropertyEditor(this);
+        propEditor = new PropertyEditor(this);
 
-        if (!this.shouldHideMenu) {
-            add(this.menuBar, "North");
+        if (!shouldHideMenu) {
+            add(menuBar, "North");
         }
-        add(this.mainPanel, "Center");
+        add(mainPanel, "Center");
 
         MouseAdapter hideListener = new MouseAdapter() {
             public void mouseMoved(MouseEvent e) {
-                if ((StuyDashboardFrame.this.shouldHideMenu) && (e.getY() < 10)) {
-                    StuyDashboardFrame.this.add(StuyDashboardFrame.this.menuBar, "North");
-                    StuyDashboardFrame.this.validate();
+                if ((shouldHideMenu) && (e.getY() < 10)) {
+                    add(menuBar, "North");
+                    validate();
                 }
             }
 
             public void mouseEntered(MouseEvent e) {
-                if (StuyDashboardFrame.this.shouldHideMenu) {
-                    StuyDashboardFrame.this.remove(StuyDashboardFrame.this.menuBar);
-                    StuyDashboardFrame.this.validate();
+                if (shouldHideMenu) {
+                    remove(menuBar);
+                    validate();
                 }
             }
         };
-        this.smartDashboardPanel.addMouseListener(hideListener);
-        this.smartDashboardPanel.addMouseMotionListener(hideListener);
+        smartDashboardPanel.addMouseListener(hideListener);
+        smartDashboardPanel.addMouseMotionListener(hideListener);
 
         if (competition) {
             setPreferredSize(NETBOOK_SIZE);
@@ -120,24 +120,24 @@ public class StuyDashboardFrame extends JFrame {
 
             setDefaultCloseOperation(0);
 
-            setPreferredSize(new Dimension(this.prefs.width.getValue().intValue(), this.prefs.height.getValue().intValue()));
-            setLocation(this.prefs.x.getValue().intValue(), this.prefs.y.getValue().intValue());
+            setPreferredSize(new Dimension(prefs.width.getValue().intValue(), prefs.height.getValue().intValue()));
+            setLocation(prefs.x.getValue().intValue(), prefs.y.getValue().intValue());
         }
 
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
-                StuyDashboardFrame.this.exit();
+                exit();
             }
         });
         addComponentListener(new ComponentListener() {
             public void componentResized(ComponentEvent e) {
-                StuyDashboardFrame.this.prefs.width.setValue(Integer.valueOf(StuyDashboardFrame.this.getWidth()));
-                StuyDashboardFrame.this.prefs.height.setValue(Integer.valueOf(StuyDashboardFrame.this.getHeight()));
+                prefs.width.setValue(Integer.valueOf(getWidth()));
+                prefs.height.setValue(Integer.valueOf(getHeight()));
             }
 
             public void componentMoved(ComponentEvent e) {
-                StuyDashboardFrame.this.prefs.x.setValue(Integer.valueOf(StuyDashboardFrame.this.getX()));
-                StuyDashboardFrame.this.prefs.y.setValue(Integer.valueOf(StuyDashboardFrame.this.getY()));
+                prefs.x.setValue(Integer.valueOf(getX()));
+                prefs.y.setValue(Integer.valueOf(getY()));
             }
 
             public void componentShown(ComponentEvent e) {
