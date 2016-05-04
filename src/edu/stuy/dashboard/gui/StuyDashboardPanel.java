@@ -22,9 +22,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-import edu.wpi.first.smartdashboard.gui.DashboardPanel;
+import edu.stuy.dashboard.utils.Color;
 import edu.wpi.first.smartdashboard.gui.DisplayElement;
-import edu.wpi.first.smartdashboard.gui.GlassPane;
 import edu.wpi.first.smartdashboard.gui.StaticWidget;
 import edu.wpi.first.smartdashboard.gui.Widget;
 import edu.wpi.first.smartdashboard.livewindow.elements.LWSubsystem;
@@ -70,6 +69,24 @@ public class StuyDashboardPanel extends JPanel {
 
         table.addTableListenerEx(this.listener, 23);
         table.addSubTableListener(this.listener, true);
+    }
+
+    public void setColorScheme(Color c) {
+        super.setBackground(c);
+        super.setForeground(c.inverted());
+
+        if (this.glassPane != null) {
+            this.glassPane.setBackground(c);
+            this.glassPane.setForeground(c.inverted());
+        } else {
+            System.err.println("DashboardPanel Glass Pane not initialized!");
+        }
+        if (this.backPane != null) {
+            this.backPane.setBackground(c);
+            this.backPane.setForeground(c.inverted());
+        } else {
+            System.err.println("DashboardPanel Back Pane not initialized!");
+        }
     }
 
     public ITable getTable() {

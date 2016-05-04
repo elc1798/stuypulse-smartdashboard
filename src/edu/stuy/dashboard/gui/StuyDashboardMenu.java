@@ -1,6 +1,5 @@
 package edu.stuy.dashboard.gui;
 
-import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -19,6 +18,7 @@ import javax.swing.event.MenuListener;
 
 import org.jfree.ui.ExtensionFileFilter;
 
+import edu.stuy.dashboard.utils.Color;
 import edu.stuy.dashboard.workarounds.MainPanel;
 import edu.stuy.dashboard.workarounds.PropertyEditor;
 import edu.wpi.first.smartdashboard.gui.DisplayElement;
@@ -237,16 +237,19 @@ public class StuyDashboardMenu extends JMenuBar {
         add(viewMenu);
     }
 
-    public void setBackground(Color c) {
+    public void setColorScheme(Color c) {
         super.setBackground(c);
-        try {
+        super.setForeground(c.inverted());
+        if (fileMenu != null) {
             fileMenu.setBackground(c);
-        } catch (Exception e) {
+            fileMenu.setForeground(c.inverted());
+        } else {
             System.err.println("File Menu not initialized yet!");
         }
-        try {
+        if (viewMenu != null) {
             viewMenu.setBackground(c);
-        } catch (Exception e) {
+            viewMenu.setForeground(c.inverted());
+        } else {
             System.err.print("View Menu not intialized yet!");
         }
     }

@@ -2,7 +2,6 @@ package edu.stuy.dashboard.gui;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
@@ -19,9 +18,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.JFrame;
-import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 
+import edu.stuy.dashboard.utils.Color;
 import edu.stuy.dashboard.workarounds.LogToCSV;
 import edu.stuy.dashboard.workarounds.MainPanel;
 import edu.stuy.dashboard.workarounds.PropertyEditor;
@@ -52,7 +51,7 @@ public class StuyDashboardFrame extends JFrame {
     private final StuyDashboardPanel liveWindowPanel;
     private final MainPanel mainPanel;
     private DisplayMode displayMode = DisplayMode.SmartDashboard;
-    private final JMenuBar menuBar;
+    private final StuyDashboardMenu menuBar;
     private final PropertyEditor propEditor;
     private boolean shouldHideMenu = ((Boolean) this.prefs.hideMenu.getValue()).booleanValue();
 
@@ -147,12 +146,23 @@ public class StuyDashboardFrame extends JFrame {
             public void componentHidden(ComponentEvent e) {
             }
         });
-   
+
         INSTANCE = this;
-        this.mainPanel.setBackground(Color.BLACK);
-        this.smartDashboardPanel.setBackground(Color.BLACK);
-        this.menuBar.setBackground(Color.GREEN);
-        this.setBackground(Color.BLACK);
+
+        setMenuBarColor(new Color(0, 255, 0));
+        setBodyColor(new Color(0, 0, 0));
+    }
+
+    public void setMenuBarColor(Color c) {
+        this.menuBar.setColorScheme(c);
+    }
+
+    public void setBodyColor(Color c) {
+        this.mainPanel.setColorScheme(c);
+        this.smartDashboardPanel.setColorScheme(c);
+
+        this.setBackground(c);
+        this.setForeground(c.inverted());
     }
 
     public final void setDisplayMode(DisplayMode mode) {

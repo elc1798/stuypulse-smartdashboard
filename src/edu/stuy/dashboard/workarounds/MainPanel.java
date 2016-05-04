@@ -6,6 +6,7 @@ import java.util.HashMap;
 import javax.swing.JPanel;
 
 import edu.stuy.dashboard.gui.StuyDashboardPanel;
+import edu.stuy.dashboard.utils.Color;
 
 @SuppressWarnings("serial")
 public final class MainPanel extends JPanel {
@@ -42,4 +43,8 @@ public final class MainPanel extends JPanel {
             throw new IllegalArgumentException("That panel already exists");
     }
 
+    public void setColorScheme(Color c) {
+        super.setBackground(c);
+        super.setForeground(c.inverted());
+    }
 }
