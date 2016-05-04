@@ -37,7 +37,7 @@ public class StuyDashboard {
             System.exit(2);
         }
 
-        ProgressMonitor monitor = new ProgressMonitor(null, "Loading SmartDashboard", "Initializing internal code...", 0, 1000);
+        ProgressMonitor monitor = new ProgressMonitor(null, "StuyPulse Dashboard Loading...", "Initializing internal code...", 0, 1000);
 
         FileSniffer.findExtensions(monitor, 0, 490);
 
